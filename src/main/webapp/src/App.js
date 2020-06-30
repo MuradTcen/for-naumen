@@ -23,7 +23,7 @@ function App() {
                             <Route path="/edit-phone/:id" exact component={Phone}/>
                             <Route path="/phone-list" exact component={PhoneList}/>
                             //todo: разобраться с редиректом на страницу сваггера
-                            <Route path='/swagger' component={() => { window.location = 'https://phone.herokuapp.com/swagger-ui.html#'; return null;} }/>
+                            <Route path='/swagger' component={() => { window.location = 'https://naumen-phones.herokuapp.com/swagger-ui.html#'; return null;} }/>
                             <Route path='/github' component={() => { window.location = 'https://github.com/MuradTcen/for-naumen'; return null;} }/>
                         </Switch>
                     </Col>
