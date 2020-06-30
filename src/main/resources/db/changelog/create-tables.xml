@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="muradtcen" id="create_table_phones">
+        <sql>
+            CREATE TABLE phones (
+            id SERIAL NOT NULL,
+            name VARCHAR(255) NOT NULL,
+            number VARCHAR(255) NOT NULL UNIQUE,
+            created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
+            updated_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL,
+            PRIMARY KEY(id));
+        </sql>
+        <rollback>
+            <sql>
+                DROP TABLE phones;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="muradtcen" id="set_phones_sequences">
+        <sql>
+            SELECT setval('phones_id_seq', (SELECT MAX(id) FROM phones) + 1);
+        </sql>
+        <rollback>
+            <sql>
+                DROP SEQUENCE phones_id_seq;
+            </sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
