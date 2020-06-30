@@ -99,6 +99,52 @@ endpoint: GET /phones/searchByNumber?phoneSubstring=<...>
 
 ---------------------------
 
-#### Что сделано: 
-#### Сценарий:
-#### Комментарий
+##### Что сделано:
+1. Back-end Rest API (Java 8, Spring Boot, Liquibase, Swagger), Front-end (js, React.js), слой БД (PostgresQL)
+
+2. БД: простая таблица Phones с аудит-полями created_at и updated_at. Created_at используется для удаления записей через
+ определенное время. Расписание запуска задаётся через cron-выражение. Время жизни телефонных номеров захардкожено.  
+
+3. Back-end: слой контроллеров, сервисов, сущностей, репозиториев, утилит(валидация, кэш)
+Есть своя аннотация @PhoneConstraint для проверки на соответствие формату "+7<999><9999999>". Работа с сущностями
+через репозиторий, используется Specification для фильтрации.
+
+4. Front-End: React.js, react-bootstrap: ошибки валидации выводятся
+[![imageup.ru](https://imageup.ru/img160/3625426/validation-error.png)](https://imageup.ru/img160/3625426/validation-error.png.html)
+
+Поиск вхождений:
+По имени:
+[![imageup.ru](https://imageup.ru/img171/3625427/searchname.png)](https://imageup.ru/img171/3625427/searchname.png.html)
+
+По номеру:
+[![imageup.ru](https://imageup.ru/img33/3625428/searchnumber.png)](https://imageup.ru/img33/3625428/searchnumber.png.html)
+
+5. Есть немного тестов на бэке для валидации
+
+6. Есть Swagger
+
+##### Проблемы и комментарии:
+
+1. Больше бы поработал с кэшем и с CompletableFuture (Сохранение дампа на жесткий диск) 
+
+2. Интереснее было бы сделать задание в рекомендуемом стеке Scala, Play 2, Slick , но сделал просмотр технологий и оценку времени и
+решил сделать в стеке Java и Spring
+
+##### Запуск под Linux:
+
+Сборка проекта: `./gradlew build`
+
+Сборка докер-контейнера: `sudo docker build -t app .`
+
+Запуск докер-контейнера: `sudo docker run app`
+
+Завершение докер-контейнера: `sudo docker stop CONTAINER ID`
+
+Узнать CONTAINER ID докер-контейнера: `sudo docker ps`
+
+Доступно описание API через SWAGGER: `http://localhost:8080/swagger-ui.html#`
+
+Задеплоено на Heroku: `https://naumen-phones.herokuapp.com`
+
+Соответственно SWAGGER на Heroku: `https://naumen-phones.herokuapp.com//swagger-ui.html#`
+
