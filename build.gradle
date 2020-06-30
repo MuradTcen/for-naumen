@@ -1,0 +1,87 @@
+plugins {
+	id 'org.springframework.boot' version '2.2.0.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+	id 'java'
+	id "com.moowork.node" version "1.3.1"
+}
+
+apply plugin: 'com.moowork.node'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'naumen.com'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+node {
+	version = '10.14.1'
+	npmVersion = '6.4.1'
+	download = true
+	npmWorkDir = file("${project.buildDir}/npm")
+	nodeModulesDir = file("${project.projectDir}/src/main/webapp")
+}
+
+repositories {
+	mavenCentral()
+}
+
+def webappDir = "$projectDir/src/main/webapp"
+sourceSets {
+	main {
+		resources {
+			srcDirs = ["$webappDir/build", "$projectDir/src/main/resources"]
+		}
+	}
+}
+
+processResources {
+	dependsOn "buildReact"
+}
+
+task buildReact(type: NpmTask) {
+	dependsOn "installReact"
+	args = ["run-script", "build"]
+}
+
+task installReact(type: NpmTask) {
+	dependsOn "npm_install"
+	args = ["audit", "fix"]
+	args = ["install"]
+}
+
+task copyWebApp(type: Copy) {
+	from "$webappDir/build"
+	into "$projectDir/src/main/resources/static"
+}
+
+copyWebApp.dependsOn 'buildReact'
+compileJava.dependsOn copyWebApp
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.liquibase:liquibase-core'
+	implementation 'org.postgresql:postgresql:42.2.10'
+	implementation 'io.springfox:springfox-swagger2:2.9.2'
+	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+	implementation 'org.apache.commons:commons-io:1.3.2'
+
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+
+	testImplementation "org.junit.jupiter:junit-jupiter:5.4.2"
+	testImplementation "org.junit.jupiter:junit-jupiter-params:5.4.2"
+}
+
+test {
+	useJUnitPlatform()
+}
